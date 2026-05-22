@@ -1,0 +1,5 @@
+﻿.hero-section {
+    background: linear-gradient(rgba(0, 40, 80, 0.7), rgba(0, 40, 80, 0.4)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+    color: white;
+    padding: 150px 0;
+}

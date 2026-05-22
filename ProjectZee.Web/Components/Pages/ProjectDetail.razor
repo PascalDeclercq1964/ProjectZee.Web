@@ -1,0 +1,94 @@
+﻿@page "/projectdetail/{id}"
+<div class="container my-5">
+    <!-- Back button -->
+    <a href="/projecten" class="btn btn-link text-muted p-0 mb-3 text-decoration-none"><i class="bi bi-arrow-left me-2"></i>Terug naar overzicht</a>
+
+    <div class="row g-5">
+        <!-- Linker Kolom: Media & Specs -->
+        <div class="col-lg-7">
+            <h1 class="fw-bold mb-2">Project Spindrift</h1>
+            <p class="text-muted fs-5"><i class="bi bi-geo-alt-fill text-danger"></i>Oostende</p>
+
+            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200&q=80" class="img-fluid rounded shadow-sm mb-4" alt="Project spindrift">
+
+            <h3 class="fw-bold mb-3 mt-4">Projectkenmerken</h3>
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <table class="table table-striped mb-0">
+                        <tbody>
+                            <tr>
+                                <td class="fw-semibold px-4 py-3"><i class="bi bi-tsunami text-info me-2"></i>Zeezicht</td>
+                                <td class="px-4 py-3">Frontaal panoramisch zeezicht (4e verdieping)</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold px-4 py-3"><i class="bi bi-compass text-info me-2"></i>Afstand tot strand</td>
+                                <td class="px-4 py-3">0 meter (Direct aan de dijk)</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold px-4 py-3"><i class="bi bi-door-closed text-info me-2"></i>Slaapkamers</td>
+                                <td class="px-4 py-3">2 volwaardige slaapkamers</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold px-4 py-3"><i class="bi bi-bounding-box text-info me-2"></i>Oppervlakte</td>
+                                <td class="px-4 py-3">85 m² + terras aan de achterzijde</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-semibold px-4 py-3"><i class="bi bi-ev-station text-info me-2"></i>Extra's</td>
+                                <td class="px-4 py-3">Inclusief private kelderberging voor strandgerief</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rechter Kolom: Financiële instap & Call to Action -->
+        <div class="col-lg-5">
+            <div class="card border-0 shadow bg-white p-4 sticky-lg-top" style="top: 90px;">
+                <h3 class="fw-bold mb-4 border-bottom pb-2 text-dark">Financieel Model</h3>
+
+                <div class="mb-3">
+                    <label class="text-muted small uppercase fw-bold">Totale Aankoopsom (incl. raming kosten)</label>
+                    <h2 class="fw-bold text-dark">€ 565.000</h2>
+                </div>
+
+                <div class="alert alert-info border-0 mb-4">
+                    <h5 class="fw-bold text-dark mb-1"><i class="bi bi-info-circle-fill me-2"></i>16 Aandelen Structuur</h5>
+                    <p class="small mb-0 text-dark">Dit project is opgedeeld in exact 16 aandelen. Elk aandeel geeft recht op <strong>2 à 4 weken exclusief gebruik per jaar</strong> via ons rotatiesysteem.</p>
+                </div>
+
+                <div class="row bg-light rounded p-3 mb-4 g-2">
+                    <div class="col-6">
+                        <span class="text-muted small">Prijs per aandeel:</span>
+                        <h4 class="fw-bold text-info mb-0">€ 35.313</h4>
+                    </div>
+                    <div class="col-6 border-start ps-3">
+                        <span class="text-muted small">Vaste kosten/jr (schatting):</span>
+                        <h4 class="fw-bold text-dark mb-0">€ 250 <span class="fs-6 fw-normal text-muted">/aandeel</span></h4>
+                    </div>
+                </div>
+
+                <!-- Progress bar investeerders -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between small fw-bold mb-1">
+                        <span>Status kandidaten</span>
+                        <span class="text-success">Kandidaten voor 7 van de 16 aandelen</span>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 44%"></div>
+                    </div>
+                    <p class="text-muted small mt-2 mb-0">We zoeken nog mede-investeerders om de aankoop te finaliseren</p>
+                </div>
+
+                <button class="btn btn-success btn-lg w-100 fw-bold shadow-sm mb-2"><i class="bi bi-chat-left-text me-2"></i>Stel je kandidaat</button>
+                <button class="btn btn-outline-secondary w-100 fw-bold"><i class="bi bi-bell me-2"></i>Volg dit project</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public string id { get; set; }
+}

@@ -1,0 +1,29 @@
+﻿@page "/faq"
+@using BlazorBootstrap
+<section class="container my-5 py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h2 class="fw-bold text-center mb-4"><i class="bi bi-question-circle-fill text-info me-2"></i>Veelgestelde vragen</h2>
+            <Accordion>
+                <AccordionItem Title="Wat is een volger">
+                    <Content>
+                        <b>This is the first item's accordion body.</b> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the .accordion-body, though the transition does limit overflow.
+                    </Content>
+                </AccordionItem>
+                <AccordionItem Title="Wat is een kandidaat">
+                    <Content>
+                        <b>This is the second item's accordion body.</b> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the .accordion-body, though the transition does limit overflow.
+                    </Content>
+                </AccordionItem>
+                <AccordionItem Title="Wat is een project">
+                    <Content>
+                        <b>This is the third item's accordion body.</b> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the .accordion-body, though the transition does limit overflow.
+                    </Content>
+                </AccordionItem>
+            </Accordion>
+        </div>
+    </div>
+</section>
+@code {
+
+}

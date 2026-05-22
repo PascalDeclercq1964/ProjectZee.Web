@@ -1,0 +1,106 @@
+﻿@page "/projecten"
+<div class="container my-5">
+    <h1 class="mb-4 fw-bold text-dark"><i class="bi bi-building-gear text-info me-2"></i>Lopende Kustprojecten</h1>
+
+    <div class="row g-4">
+        <!-- Linker Kolom: Filters -->
+        <div class="col-lg-3">
+            <div class="card border-0 shadow-sm sticky-lg-top" style="top: 90px;">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3 border-bottom pb-2"><i class="bi bi-funnel me-2 text-info"></i>Filters</h5>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Regio</label>
+                        <select class="form-select bg-light">
+                            <option>Alle regio's</option>
+                            <option>Middenkust (Oostende/Nieuwpoort)</option>
+                            <option>Oostkust (Knokke/Blankenberge)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Slaapkamers</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="bed2" checked>
+                            <label class="form-check-label" href="#bed2">2 Slaapkamers</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="bed3">
+                            <label class="form-check-label" href="#bed3">3+ Slaapkamers</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Budget (Max)</label>
+                        <input type="range" class="form-range" min="300000" max="800000" step="500000" value="600000">
+                        <div class="d-flex justify-content-between text-muted small">
+                            <span>€300k</span>
+                            <span>€800k</span>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-info w-100 text-white fw-bold">Filters toepassen</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rechter Kolom: Projecten Lijst -->
+        <div class="col-lg-9">
+            <div class="row g-4">
+
+                <!-- Card 1: Residentie Spindrift -->
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Project Spindrift">
+                        <div class="card-body">
+                            <span class="badge bg-success mb-2">In aanvraag</span>
+                            <h4 class="card-title fw-bold text-dark">Project Spindrift</h4>
+                            <p class="text-muted mb-3"><i class="bi bi-geo-alt-fill text-danger"></i> Oostende — Zeedijk</p>
+
+                            <div class="row g-2 mb-3 bg-light p-2 rounded text-center small">
+                                <div class="col-6 border-end"><strong>Budget:</strong> <br><span class="text-info fw-bold">€500.000</span></div>
+                                <div class="col-6"><strong>Kamers:</strong> <br>2 Slaapkamers</div>
+                            </div>
+
+                            <div class="d-flex justify-content-between text-muted small mb-4 px-1">
+                                <span><i class="bi bi-eye-fill me-1"></i> 42 Volgers</span>
+                                <span><i class="bi bi-people-fill me-1 text-success"></i> 7 / 16 Aandelen</span>
+                            </div>
+
+                            <a href="/projectdetail/1" class="btn btn-outline-info w-100 fw-bold">Bekijk details & aandelen</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Residentie Zeebries -->
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Project Zeebries">
+                        <div class="card-body">
+                            <span class="badge bg-warning text-dark mb-2">Binnenkort</span>
+                            <h4 class="card-title fw-bold text-dark">Project Zeebries</h4>
+                            <p class="text-muted mb-3"><i class="bi bi-geo-alt-fill text-danger"></i> Nieuwpoort — Bad</p>
+
+                            <div class="row g-2 mb-3 bg-light p-2 rounded text-center small">
+                                <div class="col-6 border-end"><strong>Budget:</strong> <br><span class="text-info fw-bold">€545.000</span></div>
+                                <div class="col-6"><strong>Kamers:</strong> <br>2 Slaapkamers</div>
+                            </div>
+
+                            <div class="d-flex justify-content-between text-muted small mb-4 px-1">
+                                <span><i class="bi bi-eye-fill me-1"></i> 18 Volgers</span>
+                                <span><i class="bi bi-people-fill me-1"></i> 2 / 16 Aandelen</span>
+                            </div>
+
+                            <a href="#" class="btn btn-outline-secondary w-100 fw-bold disabled">Binnenkort beschikbaar</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+}

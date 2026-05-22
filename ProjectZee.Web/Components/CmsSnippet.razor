@@ -1,0 +1,24 @@
+﻿@using ProjectZee.Web.Services
+@inject CmsService Cms
+
+<div class="cms-body">
+    @if (contentItemProperties!=null)
+    {
+        @((MarkupString)contentItemProperties.Content.Markup)
+    }
+</div>
+
+
+@code {
+    [Parameter] public string Slug { get; set; } = "home";
+
+    private CmsContentItem? contentItemProperties;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        contentItemProperties = await Cms.GetPageAsync(Slug);
+        if (contentItemProperties == null)
+            contentItemProperties = new CmsContentItem { Content = new ContentField { Markup = "Oops, foutje ... content niet gevonden." } };
+    }
+
+}
