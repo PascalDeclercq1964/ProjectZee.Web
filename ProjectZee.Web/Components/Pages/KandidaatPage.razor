@@ -1,0 +1,167 @@
+﻿@page "/kandidaat"
+<!-- Registratie Formulier Card -->
+<div class="card border-0 shadow bg-white p-4 mt-4">
+    <h3 class="fw-bold mb-3 text-dark border-bottom pb-2">
+        <i class="bi bi-pencil-square text-success me-2"></i>Kandidaat Registratie
+    </h3>
+    <p class="text-muted small mb-4">
+        Stel jezelf kandidaat voor dit deelsysteem. Dit formulier helpt ons om de ideale match te vinden tussen mede-investeerders.
+    </p>
+
+    <EditForm Model="@RegistrationForm" OnValidSubmit="HandleRegistration">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="text-danger small mb-3" />
+
+        <!-- 1. Hoofdkandidaat -->
+        <h5 class="fw-bold text-muted mb-3">1. Persoonlijke Gegevens</h5>
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label class="form-label small fw-semibold">Voornaam</label>
+                <InputText @bind-Value="RegistrationForm.FirstName" class="form-control" placeholder="John" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label small fw-semibold">Naam</label>
+                <InputText @bind-Value="RegistrationForm.LastName" class="form-control" placeholder="Doe" />
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label small fw-semibold">Geboortedatum</label>
+            <InputDate @bind-Value="RegistrationForm.BirthDate" class="form-control" />
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label small fw-semibold">Adres (Straat, Nr, Postcode, Gemeente)</label>
+            <InputText @bind-Value="RegistrationForm.Address" class="form-control" placeholder="Zeedijk 10 bus 2, 8400 Oostende" />
+        </div>
+
+        <!-- 2. Optionele Partner / Mede-eigenaar -->
+        <div class="form-check form-switch mb-3 bg-light p-3 rounded border">
+            <input class="form-check-input ms-0 me-2" type="checkbox" id="hasPartner" @bind="RegistrationForm.HasPartner">
+            <label class="form-check-label fw-bold text-dark" for="hasPartner">Partner of mede-investeerder toevoegen?</label>
+        </div>
+
+        @if (RegistrationForm.HasPartner)
+        {
+            <div class="p-3 border rounded bg-light mb-4 animated fadeIn">
+                <h6 class="fw-bold text-muted mb-3"><i class="bi bi-person-plus me-1"></i>Gegevens Partner / Mede-eigenaar</h6>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label small">Voornaam partner</label>
+                        <InputText @bind-Value="RegistrationForm.PartnerFirstName" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small">Naam partner</label>
+                        <InputText @bind-Value="RegistrationForm.PartnerLastName" class="form-control" />
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small">Geboortedatum partner</label>
+                    <InputDate @bind-Value="RegistrationForm.PartnerBirthDate" class="form-control" />
+                </div>
+            </div>
+        }
+
+        <!-- 3. Vastgoed Wensen & Budget -->
+        <h5 class="fw-bold text-muted mb-3 border-top pt-3">2. Investeringsprofiel & Wensen</h5>
+
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label class="form-label small fw-semibold">Beoogd Budget (€)</label>
+                <InputNumber @bind-Value="RegistrationForm.TargetBudget" class="form-control" placeholder="25000" />
+                <span class="text-muted xsmall">Richtlijn voor jouw aande(e)l(en)</span>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label small fw-semibold">Absoluut Max. Budget (€)</label>
+                <InputNumber @bind-Value="RegistrationForm.MaxBudget" class="form-control" placeholder="50000" />
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label small fw-semibold">Gewenste Regio / Gemeente</label>
+            <InputText @bind-Value="RegistrationForm.PreferredRegion" class="form-control" placeholder="Bijv. Oostende, Nieuwpoort, Knokke..." />
+        </div>
+
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <label class="form-label small fw-semibold">Gewenst aantal slaapkamers</label>
+                <InputNumber @bind-Value="RegistrationForm.PreferredBedrooms" class="form-control" min="1" max="5" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label small fw-semibold">Max. afstand tot strand (meters)</label>
+                <InputNumber @bind-Value="RegistrationForm.MaxDistanceToBeach" class="form-control" step="50" />
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label small fw-semibold">Zeezicht vereist?</label>
+            <InputSelect @bind-Value="RegistrationForm.SeaViewPreference" class="form-select">
+                @foreach (var preference in Enum.GetValues<SeaViewPreferenceType>())
+                {
+                    <option value="@preference">@preference.ToString()</option>
+                }
+            </InputSelect>
+        </div>
+
+        <!-- 4. Bio / Voorstelling -->
+        <h5 class="fw-bold text-muted mb-3 border-top pt-3">3. Wie ben je?</h5>
+        <div class="mb-4">
+            <label class="form-label small fw-semibold">Korte introductie (Bio)</label>
+            <InputTextArea @bind-Value="RegistrationForm.Bio" class="form-control" rows="4"
+                           placeholder="Vertel je toekomstige mede-eigenaars kort wie je bent, je gezinssituatie en waarom je graag wilt deelnemen aan dit project..." />
+            <span class="text-muted xsmall">Belangrijk voor de sociale controle en gunning binnen de groep.</span>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn btn-success btn-lg w-100 fw-bold shadow-sm py-3">
+            <i class="bi bi-check-circle-fill me-2"></i>Verstuur mijn kandidatuur
+        </button>
+    </EditForm>
+</div>
+
+@code {
+    // Enum voor Zeezicht voorkeur
+    public enum SeaViewPreferenceType { Nee, NiceToHave, MustHave }
+
+    // Het C# Data-Model voor het formulier
+    public class CandidateRegistrationModel
+    {
+        // Hoofdkandidaat
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public DateTime? BirthDate { get; set; } = DateTime.Today.AddYears(-30);
+        public string Address { get; set; } = string.Empty;
+
+        // Partner switch & gegevens
+        public bool HasPartner { get; set; }
+        public string? PartnerFirstName { get; set; }
+        public string? PartnerLastName { get; set; }
+        public DateTime? PartnerBirthDate { get; set; }
+
+        // Financieel & Vastgoed
+        public double TargetBudget { get; set; }
+        public double MaxBudget { get; set; }
+        public string PreferredRegion { get; set; } = string.Empty;
+        public int PreferredBedrooms { get; set; } = 2;
+        public int MaxDistanceToBeach { get; set; } = 100;
+        public SeaViewPreferenceType SeaViewPreference { get; set; } = SeaViewPreferenceType.NiceToHave;
+
+        // Persoonlijk
+        public string Bio { get; set; } = string.Empty;
+    }
+
+    private CandidateRegistrationModel RegistrationForm { get; set; } = new();
+
+    private void HandleRegistration()
+    {
+        // Hier verwerk je de data (bijv. mappen naar Odoo API of database via een service)
+        Console.WriteLine($"Nieuwe kandidaat: {RegistrationForm.FirstName} {RegistrationForm.LastName}");
+        Console.WriteLine($"Heeft partner: {RegistrationForm.HasPartner}");
+        Console.WriteLine($"Max budget: {RegistrationForm.MaxBudget}");
+
+        // Optioneel: reset formulier of toon succesboodschap
+    }
+}
+@code {
+
+}

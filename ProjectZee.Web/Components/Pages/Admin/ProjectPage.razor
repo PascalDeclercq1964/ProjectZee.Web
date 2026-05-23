@@ -1,0 +1,260 @@
+﻿@page "/admin/project/manage"
+@page "/admin/project/manage/{ProjectId:int}"
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <div>
+            <h1 class="fw-bold text-dark"><i class="bi bi-building-gear text-info me-2"></i>Projectbeheer</h1>
+            <p class="text-muted mb-0">Pas de criteria, parameters en het budget aan voor het deelsysteem-project.</p>
+        </div>
+        <button type="button" class="btn btn-outline-secondary" @onclick="Cancel">
+            <i class="bi bi-x-circle me-1"></i>Annuleren
+        </button>
+    </div>
+
+    <EditForm Model="@ProjectSetup" OnValidSubmit="SaveChanges">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="text-danger small mb-3" />
+
+        <div class="row g-4">
+            <!-- Linker Kolom: Core Parameters & Vastgoed Criteria -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm p-4 mb-4 bg-white">
+                    <h5 class="fw-bold text-dark mb-3 border-bottom pb-2">1. Algemeen & Locatie</h5>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Naam van het project (bijv. een zeeterm)</label>
+                        <InputText @bind-Value="ProjectSetup.Name" class="form-control form-control-lg" placeholder="Residentie Spindrift" />
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Regio of Gemeente</label>
+                            <InputText @bind-Value="ProjectSetup.RegionOrCity" class="form-control" placeholder="Oostende (Zeedijk)" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Status Project</label>
+                            <InputSelect @bind-Value="ProjectSetup.Status" class="form-select">
+                                <option value="Binnenkort">Binnenkort beschikbaar</option>
+                                <option value="InAanvraag">In Aanvraag / Zoekfase</option>
+                                <option value="Volzet">Volzet</option>
+                            </InputSelect>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm p-4 mb-4 bg-white">
+                    <h5 class="fw-bold text-dark mb-3 border-bottom pb-2">2. Vastgoed Specificaties (Minima / Criteria)</h5>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Aantal slaapkamers</label>
+                            <InputNumber @bind-Value="ProjectSetup.Bedrooms" class="form-control" min="1" max="5" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Minimale Oppervlakte (m²)</label>
+                            <InputNumber @bind-Value="ProjectSetup.MinApartmentSize" class="form-control" min="30" />
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Maximale Afstand tot strand (meters)</label>
+                            <div class="input-group">
+                                <InputNumber @bind-Value="ProjectSetup.MaxDistanceToBeach" class="form-control" min="0" step="50" />
+                                <span class="input-group-text">meter</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Zeezicht Eis</label>
+                            <InputSelect @bind-Value="ProjectSetup.SeaView" class="form-select">
+                                @foreach (var val in Enum.GetValues<RequirementType>())
+                                {
+                                    <option value="@val">@val.ToString()</option>
+                                }
+                            </InputSelect>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Terras gewenst?</label>
+                            <InputSelect @bind-Value="ProjectSetup.TerrasRequirement" class="form-select">
+                                @foreach (var val in Enum.GetValues<RequirementType>())
+                                {
+                                    <option value="@val">@val.ToString()</option>
+                                }
+                            </InputSelect>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Minimale oppervlakte terras (m²)</label>
+                            <div class="input-group">
+                                <InputNumber @bind-Value="ProjectSetup.MinTerrasSize" class="form-control" min="0" disabled="@(ProjectSetup.TerrasRequirement == RequirementType.Nee)" />
+                                <span class="input-group-text">m²</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Extra Attributen Beheer -->
+                <div class="card border-0 shadow-sm p-4 bg-white">
+                    <h5 class="fw-bold text-dark mb-3 border-bottom pb-2">3. Extra Attributen & Troeven</h5>
+                    <p class="text-muted small">Voeg extra kenmerken toe die belangrijk zijn voor de investeerders (bijv. garage, warmtepomp, ...).</p>
+
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Bijv. Private kelderberging voor strandgerief" @bind="NewAttributeText" />
+                        <button class="btn btn-info text-white fw-bold" type="button" @onclick="AddAttribute">
+                            <i class="bi bi-plus-lg me-1"></i>Toevoegen
+                        </button>
+                    </div>
+
+                    <ul class="list-group">
+                        @if (!ProjectSetup.ExtraAttributes.Any())
+                        {
+                            <li class="list-group-item text-muted text-center py-3 small">Nog geen extra attributen toegevoegd.</li>
+                        }
+                        @foreach (var attr in ProjectSetup.ExtraAttributes)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-check2-circle text-info me-2"></i>@attr</span>
+                                <button type="button" class="btn btn-link text-danger p-0" @onclick="() => RemoveAttribute(attr)">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Rechter Kolom: Financiële Doelen & Groepsgrootte -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow bg-white p-4 sticky-lg-top" style="top: 90px;">
+                    <h5 class="fw-bold text-dark mb-3 border-bottom pb-2">4. Financieel Model & Groep</h5>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Doel Aankoopbudget (€)</label>
+                        <div class="input-group">
+                            <span class="input-group-text">€</span>
+                            <InputNumber @bind-Value="ProjectSetup.TargetBudget" class="form-control form-control-lg fw-bold text-dark" />
+                        </div>
+                        <span class="text-muted xsmall">Dit omvat de geschatte aankoopprijs + notariskosten.</span>
+                    </div>
+
+                    <!-- Automatische berekening aandeelprijs -->
+                    <div class="bg-light p-3 rounded mb-4 border text-center">
+                        <span class="text-muted small text-uppercase d-block mb-1">Berekende prijs per aandeel</span>
+                        <h3 class="fw-bold text-info mb-0">€ @((ProjectSetup.TargetBudget / 26).ToString("N0"))</h3>
+                        <span class="text-muted xsmall">Gebaseerd op de vaste 26-aandelen structuur</span>
+                    </div>
+
+                    <div class="row g-2 mb-4">
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold">Max. Kandidaten</label>
+                            <InputNumber @bind-Value="ProjectSetup.MaxCandidates" class="form-control" min="1" max="26" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-semibold">Huidige Kandidaten</label>
+                            <InputNumber @bind-Value="ProjectSetup.CurrentCandidates" class="form-control" min="0" max="@ProjectSetup.MaxCandidates" />
+                        </div>
+                    </div>
+
+                    <div class="row g-2 mb-4">
+                        <div class="col-12">
+                            <label class="form-label small fw-semibold">Aantal Volgers (Simulatie)</label>
+                            <InputNumber @bind-Value="ProjectSetup.Followers" class="form-control" min="0" />
+                        </div>
+                    </div>
+
+                    <!-- Actie knoppen -->
+                    <button type="submit" class="btn btn-success btn-lg w-100 fw-bold shadow-sm mb-2 py-3">
+                        <i class="bi bi-cloud-arrow-up-fill me-2"></i>Project Opslaan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter] public int? ProjectId { get; set; }
+
+    public enum RequirementType { Nee, NiceToHave, MustHave }
+
+    // Het overkoepelende model voor de beheerpagina
+    public class ProjectManagementModel
+    {
+        public string Name { get; set; } = string.Empty;
+        public string RegionOrCity { get; set; } = string.Empty;
+        public string Status { get; set; } = "InAanvraag";
+        public double TargetBudget { get; set; } = 500000;
+        public int Bedrooms { get; set; } = 2;
+        public int MinApartmentSize { get; set; } = 80;
+        public int MaxDistanceToBeach { get; set; } = 100;
+        public RequirementType SeaView { get; set; } = RequirementType.NiceToHave;
+        public RequirementType TerrasRequirement { get; set; } = RequirementType.NiceToHave;
+        public int MinTerrasSize { get; set; } = 10;
+        public int Followers { get; set; } = 0;
+        public int CurrentCandidates { get; set; } = 0;
+        public int MaxCandidates { get; set; } = 8;
+        public List<string> ExtraAttributes { get; set; } = new();
+    }
+
+    private ProjectManagementModel ProjectSetup { get; set; } = new();
+    private string NewAttributeText { get; set; } = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        if (ProjectId.HasValue)
+        {
+            // Bestaand project inladen (Mock data simulatie)
+            ProjectSetup = new ProjectManagementModel
+            {
+                Name = "Residentie Spindrift",
+                RegionOrCity = "Oostende",
+                Status = "InAanvraag",
+                TargetBudget = 565000,
+                Bedrooms = 2,
+                MinApartmentSize = 85,
+                MaxDistanceToBeach = 50,
+                SeaView = RequirementType.MustHave,
+                TerrasRequirement = RequirementType.MustHave,
+                MinTerrasSize = 12,
+                Followers = 42,
+                CurrentCandidates = 6,
+                MaxCandidates = 8,
+                ExtraAttributes = new List<string> { "Private kelderberging", "Gerenoveerd in 2024" }
+            };
+        }
+        else
+        {
+            // Nieuw leeg project initialiseren
+            ProjectSetup = new ProjectManagementModel();
+        }
+    }
+
+    private void AddAttribute()
+    {
+        if (!string.IsNullOrWhiteSpace(NewAttributeText) && !ProjectSetup.ExtraAttributes.Contains(NewAttributeText))
+        {
+            ProjectSetup.ExtraAttributes.Add(NewAttributeText);
+            NewAttributeText = string.Empty; // Reset input field
+        }
+    }
+
+    private void RemoveAttribute(string attr)
+    {
+        ProjectSetup.ExtraAttributes.Remove(attr);
+    }
+
+    private void SaveChanges()
+    {
+        // Hier schrijf je de logica om 'ProjectSetup' naar je API, SQL of Odoo-connector te sturen
+        Console.WriteLine($"Project {ProjectSetup.Name} succesvol opgeslagen.");
+        Console.WriteLine($"Aandeelprijs herberekening: {ProjectSetup.TargetBudget / 26}");
+    }
+
+    private void Cancel()
+    {
+        // Navigeer terug naar dashboard of overzicht
+    }
+}
