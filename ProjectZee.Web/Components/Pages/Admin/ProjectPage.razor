@@ -68,7 +68,7 @@
                         <div class="col-md-6">
                             <label class="form-label small fw-semibold">Zeezicht Eis</label>
                             <InputSelect @bind-Value="ProjectSetup.SeaView" class="form-select">
-                                @foreach (var val in Enum.GetValues<RequirementType>())
+                                @foreach (var val in Enum.GetValues<RequirementTypes>())
                                 {
                                     <option value="@val">@val.ToString()</option>
                                 }
