@@ -16,5 +16,5 @@ public class Project
         public int MinTerrasSize { get; set; } = 10;
         public List<ApplicationUser> Followers { get; set; }
         public List<ShareHolder> Candidates { get; set; }
-        public List<string> ExtraAttributes { get; set; } = new();
+        public List<CustomAttributeValue> ExtraAttributes { get; set; } = new();
     }

@@ -80,7 +80,7 @@
                         <div class="col-md-6">
                             <label class="form-label small fw-semibold">Terras gewenst?</label>
                             <InputSelect @bind-Value="ProjectSetup.TerrasRequirement" class="form-select">
-                                @foreach (var val in Enum.GetValues<RequirementType>())
+                                @foreach (var val in Enum.GetValues<RequirementTypes>())
                                 {
                                     <option value="@val">@val.ToString()</option>
                                 }
@@ -89,7 +89,7 @@
                         <div class="col-md-6">
                             <label class="form-label small fw-semibold">Minimale oppervlakte terras (m²)</label>
                             <div class="input-group">
-                                <InputNumber @bind-Value="ProjectSetup.MinTerrasSize" class="form-control" min="0" disabled="@(ProjectSetup.TerrasRequirement == RequirementType.Nee)" />
+                                <InputNumber @bind-Value="ProjectSetup.MinTerrasSize" class="form-control" min="0" disabled="@(ProjectSetup.TerrasRequirement == RequirementTypes.Nee)" />
                                 <span class="input-group-text">m²</span>
                             </div>
                         </div>
@@ -189,8 +189,8 @@
         public int Bedrooms { get; set; } = 2;
         public int MinApartmentSize { get; set; } = 80;
         public int MaxDistanceToBeach { get; set; } = 100;
-        public RequirementType SeaView { get; set; } = RequirementType.NiceToHave;
-        public RequirementType TerrasRequirement { get; set; } = RequirementType.NiceToHave;
+        public RequirementTypes SeaView { get; set; } = RequirementTypes.NiceToHave;
+        public RequirementTypes TerrasRequirement { get; set; } = RequirementTypes.NiceToHave;
         public int MinTerrasSize { get; set; } = 10;
         public int Followers { get; set; } = 0;
         public int CurrentCandidates { get; set; } = 0;
@@ -215,8 +215,8 @@
                 Bedrooms = 2,
                 MinApartmentSize = 85,
                 MaxDistanceToBeach = 50,
-                SeaView = RequirementType.MustHave,
-                TerrasRequirement = RequirementType.MustHave,
+                SeaView = RequirementTypes.MustHave,
+                TerrasRequirement = RequirementTypes.MustHave,
                 MinTerrasSize = 12,
                 Followers = 42,
                 CurrentCandidates = 6,

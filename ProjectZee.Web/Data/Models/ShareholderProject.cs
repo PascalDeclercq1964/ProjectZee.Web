@@ -4,7 +4,7 @@ public class ShareholderProject
     public int ShareholderId { get; set; }
     public int ProjectId { get; set; }
 
-    public Shareholder Shareholder { get; set; }
+    public ShareHolder ShareHolder { get; set; }
     public Project Project { get; set; }
     public CustomAttributeValue CustomAttributeValue { get; set; }
 

@@ -21,7 +21,7 @@ public class ShareHolder
         public string PreferredRegion { get; set; } = string.Empty;
         public int PreferredBedrooms { get; set; } = 2;
         public int MaxDistanceToBeach { get; set; } = 100;
-        public SeaViewPreferenceType SeaViewPreference { get; set; } = SeaViewPreferenceType.NiceToHave;
+        public RequirementTypes SeaViewPreference { get; set; } = RequirementTypes.NiceToHave;
 
         // Persoonlijk
         public string Bio { get; set; } = string.Empty;
