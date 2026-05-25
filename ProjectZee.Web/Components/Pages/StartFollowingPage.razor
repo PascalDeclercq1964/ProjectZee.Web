@@ -1,0 +1,39 @@
+@page "/start-following/{id}"
+@using ProjectZee.Web.Data
+@inject ApplicationDbContext Context
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthenticationStateProvider
+<div class="container my-5">
+    <CmsSnippet Slug="ExplainFollower"/>
+    @if (isLoggedIn)
+    {
+        <CmsSnippet Slug="LoginToFollow"/>
+        <button class="btn btn-primary" @onclick="()=>Navigation.NavigateTo(x, true)">Inloggen</button>
+
+    }
+    else
+    {
+        <button class="btn btn-primary" @onclick="HandleFollow">Volg dit project</button>
+    }
+</div>
+@code {
+    private bool isLoggedIn;
+
+    private string x => $"/account/login?returnUrl=/start-following/{id}";
+    Project selectedProject { get; set; }
+
+     [Parameter]
+    public string id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        isLoggedIn = authState.User.Identity.IsAuthenticated;
+
+    }
+
+    private void HandleFollow()
+    {
+        Navigation.NavigateTo("/login");
+    }
+}
