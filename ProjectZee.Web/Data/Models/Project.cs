@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore.Scaffolding.Internal;
 using ProjectZee.Web.Data;
 
@@ -14,7 +15,29 @@ public class Project
         public RequirementTypes SeaView { get; set; } = RequirementTypes.NiceToHave;
         public RequirementTypes TerrasRequirement { get; set; } = RequirementTypes.NiceToHave;
         public int MinTerrasSize { get; set; } = 10;
-        public List<ApplicationUser> Followers { get; set; }
-        public List<ShareHolder> Candidates { get; set; }
+        public List<ProjectFollower> ProjectFollowers { get; set; }
+        public List<ProjectShareholder> ProjectShareholders { get; set; }
         public List<CustomAttributeValue> ExtraAttributes { get; set; } = new();
+
+        [NotMapped]
+        public double PricePerShare { get {return Math.Round(TargetBudget/16,0);} }
+
+        [NotMapped]
+        public string StatusDisplay
+        {
+            get
+            {
+                if (ProjectShareholders.Count == 0) 
+                    return "Nieuw!";
+
+                if (ProjectShareholders.Count > 12) 
+                    return "Populair";
+
+                if (ProjectShareholders.Count >=16) 
+                    return "Volgeboekt";
+
+                return "Zoekt nog kandidaten!";    
+
+            }
+        }
     }

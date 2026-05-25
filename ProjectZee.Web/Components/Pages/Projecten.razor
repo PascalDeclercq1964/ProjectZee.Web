@@ -1,4 +1,7 @@
 ﻿@page "/projecten"
+@using Microsoft.EntityFrameworkCore
+@using ProjectZee.Web.Data
+@inject ApplicationDbContext Context
 <div class="container my-5">
     <h1 class="mb-4 fw-bold text-dark"><i class="bi bi-building-gear text-info me-2"></i>Lopende Kustprojecten</h1>
 
@@ -11,7 +14,7 @@
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Regio</label>
-                        <select class="form-select bg-light">
+                        <select class="form-select bg-light" @bind="filter.Region">
                             <option>Alle regio's</option>
                             <option>Middenkust (Oostende/Nieuwpoort)</option>
                             <option>Oostkust (Knokke/Blankenberge)</option>
@@ -21,18 +24,22 @@
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Slaapkamers</label>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="bed2" checked>
+                            <input class="form-check-input" type="checkbox" id="bed2" @bind-value="filter.Bedrooms1">
+                            <label class="form-check-label" href="#bed2">1 Slaapkamer</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="bed2" @bind-value="filter.Bedrooms2">
                             <label class="form-check-label" href="#bed2">2 Slaapkamers</label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="bed3">
+                            <input class="form-check-input" type="checkbox" id="bed3" @bind-value="filter.Bedrooms3">
                             <label class="form-check-label" href="#bed3">3+ Slaapkamers</label>
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Budget (Max)</label>
-                        <input type="range" class="form-range" min="300000" max="800000" step="500000" value="600000">
+                        <input type="range" class="form-range" min="300000" max="800000" step="50000" @bind-value="filter.MaxBudget">
                         <div class="d-flex justify-content-between text-muted small">
                             <span>€300k</span>
                             <span>€800k</span>
@@ -48,54 +55,32 @@
         <div class="col-lg-9">
             <div class="row g-4">
 
-                <!-- Card 1: Residentie Spindrift -->
+                @foreach(var project in filteredprojects)
+                {
                 <div class="col-md-6">
                     <div class="card h-100 border-0 shadow-sm overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Project Spindrift">
+                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Project @project.Name">
                         <div class="card-body">
-                            <span class="badge bg-success mb-2">In aanvraag</span>
-                            <h4 class="card-title fw-bold text-dark">Project Spindrift</h4>
-                            <p class="text-muted mb-3"><i class="bi bi-geo-alt-fill text-danger"></i> Oostende — Zeedijk</p>
+                            <span class="badge bg-warning text-dark mb-2">@project.StatusDisplay</span>
+                            <h4 class="card-title fw-bold text-dark">Project @project.Name</h4>
+                            <p class="text-muted mb-3"><i class="bi bi-geo-alt-fill text-danger"></i>@project.RegionOrCity</p>
 
                             <div class="row g-2 mb-3 bg-light p-2 rounded text-center small">
-                                <div class="col-6 border-end"><strong>Budget:</strong> <br><span class="text-info fw-bold">€500.000</span></div>
-                                <div class="col-6"><strong>Kamers:</strong> <br>2 Slaapkamers</div>
+                                <div class="col-6 border-end"><strong>Budget:</strong> <br><span class="text-info fw-bold">€@project.TargetBudget</span></div>
+                                <div class="col-6"><strong>Kamers:</strong> <br>@project.Bedrooms Slaapkamers</div>
                             </div>
 
                             <div class="d-flex justify-content-between text-muted small mb-4 px-1">
-                                <span><i class="bi bi-eye-fill me-1"></i> 42 Volgers</span>
-                                <span><i class="bi bi-people-fill me-1 text-success"></i> 7 / 16 Aandelen</span>
+                                <span><i class="bi bi-eye-fill me-1"></i> @project.ProjectFollowers.Count Volgers</span>
+                                <span><i class="bi bi-people-fill me-1"></i> @project.ProjectShareholders.Count / 16 Aandelen</span>
                             </div>
 
-                            <a href="/projectdetail/1" class="btn btn-outline-info w-100 fw-bold">Bekijk details & aandelen</a>
+                            <a href="/projectdetail/@project.ProjectId" class="btn btn-outline-secondary w-100 fw-bold">Details</a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Card 2: Residentie Zeebries -->
-                <div class="col-md-6">
-                    <div class="card h-100 border-0 shadow-sm overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Project Zeebries">
-                        <div class="card-body">
-                            <span class="badge bg-warning text-dark mb-2">Binnenkort</span>
-                            <h4 class="card-title fw-bold text-dark">Project Zeebries</h4>
-                            <p class="text-muted mb-3"><i class="bi bi-geo-alt-fill text-danger"></i> Nieuwpoort — Bad</p>
-
-                            <div class="row g-2 mb-3 bg-light p-2 rounded text-center small">
-                                <div class="col-6 border-end"><strong>Budget:</strong> <br><span class="text-info fw-bold">€545.000</span></div>
-                                <div class="col-6"><strong>Kamers:</strong> <br>2 Slaapkamers</div>
-                            </div>
-
-                            <div class="d-flex justify-content-between text-muted small mb-4 px-1">
-                                <span><i class="bi bi-eye-fill me-1"></i> 18 Volgers</span>
-                                <span><i class="bi bi-people-fill me-1"></i> 2 / 16 Aandelen</span>
-                            </div>
-
-                            <a href="#" class="btn btn-outline-secondary w-100 fw-bold disabled">Binnenkort beschikbaar</a>
-                        </div>
-                    </div>
-                </div>
-
+                }
             </div>
         </div>
     </div>
@@ -103,4 +88,33 @@
 
 @code {
 
+    List<Project> projects = new List<Project>();
+    List<Project> filteredprojects = new List<Project>();
+    
+    ProjectFilter filter = new ProjectFilter {Bedrooms2=true, MaxBudget=500000};
+
+    override protected void OnInitialized()
+    {
+        // Hier zou je normaal gesproken de projecten uit de database laden
+        // Bijvoorbeeld: var projecten = Context.Projecten.ToList();
+
+        projects=Context.Projects
+            .Include(p => p.ProjectFollowers)
+            .Include(p => p.ProjectShareholders)
+            .ToList();
+        doFilter();
+    }
+
+    void doFilter()
+    {
+        filteredprojects=projects;
+    }
+    public class ProjectFilter
+    {
+        public double? MaxBudget { get; set; }
+        public bool Bedrooms1 { get; set; }
+        public bool Bedrooms2 { get; set; }
+        public bool Bedrooms3 { get; set; }
+        public string Region { get; set; }
+    }
 }

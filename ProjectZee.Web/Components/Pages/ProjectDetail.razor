@@ -1,4 +1,8 @@
 ﻿@page "/projectdetail/{id}"
+@using Microsoft.EntityFrameworkCore
+@using ProjectZee.Web.Data
+@inject ApplicationDbContext Context
+
 <div class="container my-5">
     <!-- Back button -->
     <a href="/projecten" class="btn btn-link text-muted p-0 mb-3 text-decoration-none"><i class="bi bi-arrow-left me-2"></i>Terug naar overzicht</a>
@@ -6,10 +10,10 @@
     <div class="row g-5">
         <!-- Linker Kolom: Media & Specs -->
         <div class="col-lg-7">
-            <h1 class="fw-bold mb-2">Project Spindrift</h1>
-            <p class="text-muted fs-5"><i class="bi bi-geo-alt-fill text-danger"></i>Oostende</p>
+            <h1 class="fw-bold mb-2">Project @currentProject.Name</h1>
+            <p class="text-muted fs-5"><i class="bi bi-geo-alt-fill text-danger"></i>@currentProject.RegionOrCity</p>
 
-            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200&q=80" class="img-fluid rounded shadow-sm mb-4" alt="Project spindrift">
+            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200&q=80" class="img-fluid rounded shadow-sm mb-4" alt="Project @currentProject.RegionOrCity">
 
             <h3 class="fw-bold mb-3 mt-4">Projectkenmerken</h3>
             <div class="card border-0 shadow-sm">
@@ -18,19 +22,19 @@
                         <tbody>
                             <tr>
                                 <td class="fw-semibold px-4 py-3"><i class="bi bi-tsunami text-info me-2"></i>Zeezicht</td>
-                                <td class="px-4 py-3">Frontaal panoramisch zeezicht (4e verdieping)</td>
+                                <td class="px-4 py-3">Frontaal panoramisch zeezicht</td>
                             </tr>
                             <tr>
                                 <td class="fw-semibold px-4 py-3"><i class="bi bi-compass text-info me-2"></i>Afstand tot strand</td>
-                                <td class="px-4 py-3">0 meter (Direct aan de dijk)</td>
+                                <td class="px-4 py-3">@currentProject.MaxDistanceToBeach meter @(currentProject.MaxDistanceToBeach==0 ? "(Direct aan de dijk)" :"")</td>
                             </tr>
                             <tr>
                                 <td class="fw-semibold px-4 py-3"><i class="bi bi-door-closed text-info me-2"></i>Slaapkamers</td>
-                                <td class="px-4 py-3">2 volwaardige slaapkamers</td>
+                                <td class="px-4 py-3">@currentProject.Bedrooms slaapkamers</td>
                             </tr>
                             <tr>
                                 <td class="fw-semibold px-4 py-3"><i class="bi bi-bounding-box text-info me-2"></i>Oppervlakte</td>
-                                <td class="px-4 py-3">85 m² + terras aan de achterzijde</td>
+                                <td class="px-4 py-3">@(currentProject.MinApartmentSize)m² + terras aan de achterzijde</td>
                             </tr>
                             <tr>
                                 <td class="fw-semibold px-4 py-3"><i class="bi bi-ev-station text-info me-2"></i>Extra's</td>
@@ -49,7 +53,7 @@
 
                 <div class="mb-3">
                     <label class="text-muted small uppercase fw-bold">Totale Aankoopsom (incl. raming kosten)</label>
-                    <h2 class="fw-bold text-dark">€ 565.000</h2>
+                    <h2 class="fw-bold text-dark">€ @currentProject.TargetBudget</h2>
                 </div>
 
                 <div class="alert alert-info border-0 mb-4">
@@ -60,7 +64,7 @@
                 <div class="row bg-light rounded p-3 mb-4 g-2">
                     <div class="col-6">
                         <span class="text-muted small">Prijs per aandeel:</span>
-                        <h4 class="fw-bold text-info mb-0">€ 35.313</h4>
+                        <h4 class="fw-bold text-info mb-0">€ @currentProject.PricePerShare</h4>
                     </div>
                     <div class="col-6 border-start ps-3">
                         <span class="text-muted small">Vaste kosten/jr (schatting):</span>
@@ -72,10 +76,10 @@
                 <div class="mb-4">
                     <div class="d-flex justify-content-between small fw-bold mb-1">
                         <span>Status kandidaten</span>
-                        <span class="text-success">Kandidaten voor 7 van de 16 aandelen</span>
+                        <span class="text-success">Kandidaten voor @currentProject.ProjectShareholders.Sum(x=>x.ShareCount) van de 16 aandelen</span>
                     </div>
                     <div class="progress" style="height: 10px;">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: 44%"></div>
+                        <div class="progress-bar bg-success" role="progressbar" style="width: @(currentProject.ProjectShareholders.Sum(x=>x.ShareCount)*100/16)%"></div>
                     </div>
                     <p class="text-muted small mt-2 mb-0">We zoeken nog mede-investeerders om de aankoop te finaliseren</p>
                 </div>
@@ -91,4 +95,14 @@
 @code {
     [Parameter]
     public string id { get; set; }
+
+    Project currentProject { get; set; }
+
+    override protected void OnParametersSet()
+    {
+        currentProject = Context.Projects
+            .Include(p => p.ProjectFollowers)
+            .Include(p => p.ProjectShareholders)
+            .FirstOrDefault(p => p.ProjectId.ToString() == id);
+    } 
 }

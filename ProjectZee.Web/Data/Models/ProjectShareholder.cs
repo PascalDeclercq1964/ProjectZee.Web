@@ -1,12 +1,13 @@
-public class ShareholderProject
+public class ProjectShareholder
 {
-    public int ShareholderProjectId { get; set; }
+    public int ProjectShareholderId { get; set; }
     public int ShareholderId { get; set; }
-    public int ProjectId { get; set; }
-
     public ShareHolder ShareHolder { get; set; }
+    public int ProjectId { get; set; }
     public Project Project { get; set; }
-    public CustomAttributeValue CustomAttributeValue { get; set; }
+    //public CustomAttributeValue CustomAttributeValue { get; set; }
+
+    public int ShareCount { get; set; }
 
     public int ShareholderProjectStatusId { get; set; }
 }

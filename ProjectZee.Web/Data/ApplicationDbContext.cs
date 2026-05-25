@@ -13,19 +13,47 @@ namespace ProjectZee.Web.Data
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<CustomAttribute>()
+                .ToTable("CustomAttribute")
+                .HasKey(ca => ca.CustomAttributeId);
+
+            builder.Entity<CustomAttribute>()
+                .HasMany(ca => ca.CustomAttributeValues)
+                .WithOne(cav => cav.CustomAttribute)
+                .HasForeignKey(cav => cav.CustomAttributeId);
+
+            builder.Entity<CustomAttributeValue>()
+                .ToTable("CustomAttributeValue")
+                .HasKey(cav => cav.CustomAttributeValueId);    
+
             builder.Entity<Project>()
                 .ToTable("Project")
-                .HasKey(p => p.ProjectId)  
-                .HasMany(p => p.Followers)
-                .WithMany(u => u.FollowedProjects);
+                .HasKey(p => p.ProjectId);
+
             builder.Entity<Project>()
-                .HasMany(p => p.Candidates)
+                .HasMany(p => p.ProjectFollowers)
+                .WithOne(e=>e.Project)
+                .HasForeignKey(pf => pf.ProjectId);
+
+            builder.Entity<Project>()
+                .HasMany(p => p.ProjectShareholders)
                 .WithOne(s => s.Project)
                 .HasForeignKey(s => s.ProjectId);
+
+            builder.Entity<Project>()
+                .HasMany(p => p.ExtraAttributes)
+                .WithOne()    
+                .HasForeignKey(cav => cav.ProjectId);
+
+            builder.Entity<ProjectFollower>()
+                .ToTable("ProjectFollower")
+                .HasKey(pf => pf.ProjectFollowerId);
 
             builder.Entity<ShareHolder>()
                 .ToTable("ShareHolder")
                 .HasKey(s => s.ShareHolderId);
+
+      
         }
     }
 }

@@ -26,4 +26,6 @@ public class ShareHolder
         // Persoonlijk
         public string Bio { get; set; } = string.Empty;
 
+        public List<Project> Projects { get; set; } = new List<Project>();
+
 }
