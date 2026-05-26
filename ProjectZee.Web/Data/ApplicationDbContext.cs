@@ -6,12 +6,18 @@ namespace ProjectZee.Web.Data
 {
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
     {
+        public DbSet<ProjectFollower> ProjectFollowers { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<ShareHolder> ShareHolders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<ApplicationUser>()
+                .HasMany<ProjectFollower>(x => x.FollowedProjects)
+                .WithOne(x=>x.User)
+                .HasForeignKey(x => x.UserId);
 
             builder.Entity<CustomAttribute>()
                 .ToTable("CustomAttribute")
@@ -48,6 +54,11 @@ namespace ProjectZee.Web.Data
             builder.Entity<ProjectFollower>()
                 .ToTable("ProjectFollower")
                 .HasKey(pf => pf.ProjectFollowerId);
+
+            builder.Entity<ProjectFollower>()
+                .HasOne(pf => pf.Project)
+                .WithMany(p => p.ProjectFollowers)
+                .HasForeignKey(x => x.ProjectId);
 
             builder.Entity<ShareHolder>()
                 .ToTable("ShareHolder")

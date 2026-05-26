@@ -1,0 +1,55 @@
+﻿@page "/usersPage"
+@using Microsoft.AspNetCore.Authorization
+@using System.Security.Claims
+@using Microsoft.EntityFrameworkCore
+@using ProjectZee.Web.Data
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ApplicationDbContext Context
+@attribute [Authorize]
+<div class="container my-5">
+    <h3>Welkom @applicationUser.FullName</h3>
+    <h4>Project waarvoor je kandidaat bent:</h4>
+
+    <h4>Project die je volgt</h4>
+    <Grid TItem="ProjectFollower" Data="applicationUser.FollowedProjects" Class="table table-sm table-striped">
+        <GridColumns>
+            <GridColumn TItem="ProjectFollower" HeaderText="Project">
+                @context.Project.Name
+            </GridColumn>
+            <GridColumn TItem="ProjectFollower" HeaderText="Regio">
+                @context.Project.RegionOrCity
+            </GridColumn>
+            <GridColumn TItem="ProjectFollower" HeaderText="Kamers">
+                @context.Project.Bedrooms
+            </GridColumn>
+            <GridColumn TItem="ProjectFollower" HeaderText="Budget">
+                @context.Project.TargetBudget
+            </GridColumn>
+            <GridColumn TItem="ProjectFollower">
+                Niet meer volgen
+            </GridColumn>
+        </GridColumns>
+    </Grid>
+
+</div>
+
+@code {
+
+    ClaimsPrincipal user;
+    ApplicationUser applicationUser;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        user = authState.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            var userName = user.Identity.Name;
+            // Hier kun je verdere logica toevoegen om de projecten op te halen die de gebruiker volgt of waarvoor hij kandidaat is.
+
+            applicationUser = Context.Users
+                .Include(x=>x.FollowedProjects).ThenInclude(x=>x.Project)
+                .FirstOrDefault(u => u.UserName == userName);
+        }
+    }
+}

@@ -1,39 +1,54 @@
 @page "/start-following/{id}"
+@using Microsoft.EntityFrameworkCore
 @using ProjectZee.Web.Data
+@using System.Security.Claims
 @inject ApplicationDbContext Context
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@rendermode InteractiveServer
 <div class="container my-5">
+    @if(selectedProject !=null)
+    {
+        <h3>@selectedProject.Name - @selectedProject.RegionOrCity - Slaapkamers: @selectedProject.Bedrooms</h3>
+    }
     <CmsSnippet Slug="ExplainFollower"/>
-    @if (isLoggedIn)
-    {
-        <CmsSnippet Slug="LoginToFollow"/>
-        <button class="btn btn-primary" @onclick="()=>Navigation.NavigateTo(x, true)">Inloggen</button>
-
-    }
-    else
-    {
-        <button class="btn btn-primary" @onclick="HandleFollow">Volg dit project</button>
-    }
+    <AuthorizeView>
+        <Authorized>
+            <button class="btn btn-primary" @onclick="HandleFollow">Volg dit project</button>
+        </Authorized>
+        <NotAuthorized>
+            <CmsSnippet Slug="LoginToFollow"/>
+            <button class="btn btn-primary" @onclick="toLogin">Inloggen</button>
+        </NotAuthorized>
+    </AuthorizeView>
 </div>
 @code {
     private bool isLoggedIn;
+    Project selectedProject { get; set; } = new Project();
 
-    private string x => $"/account/login?returnUrl=/start-following/{id}";
-    Project selectedProject { get; set; }
-
-     [Parameter]
+    [Parameter]
     public string id { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        isLoggedIn = authState.User.Identity.IsAuthenticated;
-
+        selectedProject = await Context.Projects.FirstOrDefaultAsync(p => p.ProjectId.ToString() == id);
     }
-
-    private void HandleFollow()
+    void toLogin()
     {
-        Navigation.NavigateTo("/login");
+        Navigation.NavigateTo($"/account/login?returnUrl=/start-following/{id}");
+    }
+    async Task HandleFollow()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        ProjectFollower projectFollower=new ProjectFollower
+        {
+            UserId = user.FindFirstValue(ClaimTypes.NameIdentifier),
+            ProjectId = selectedProject.ProjectId
+        };
+        Context.ProjectFollowers.Add(projectFollower);
+        Context.SaveChanges();
+        Navigation.NavigateTo("/followerspage");
     }
 }
