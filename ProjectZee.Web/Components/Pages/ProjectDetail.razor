@@ -54,22 +54,22 @@
 
                 <div class="mb-3">
                     <label class="text-muted small uppercase fw-bold">Totale Aankoopsom (incl. raming kosten)</label>
-                    <h2 class="fw-bold text-dark">€ @currentProject.TargetBudget</h2>
+                    <h2 class="fw-bold text-dark">@currentProject.TargetBudget.ToString("C0")</h2>
                 </div>
 
                 <div class="alert alert-info border-0 mb-4">
                     <h5 class="fw-bold text-dark mb-1"><i class="bi bi-info-circle-fill me-2"></i>16 Aandelen Structuur</h5>
-                    <p class="small mb-0 text-dark">Dit project is opgedeeld in exact 16 aandelen. Elk aandeel geeft recht op <strong>2 à 4 weken exclusief gebruik per jaar</strong> via ons rotatiesysteem.</p>
+                    <p class="small mb-0 text-dark">Dit project is opgedeeld in exact 16 aandelen. Elk aandeel geeft recht op <strong>2 à 4 weken exclusief gebruik per jaar</strong>.</p>
                 </div>
 
                 <div class="row bg-light rounded p-3 mb-4 g-2">
                     <div class="col-6">
                         <span class="text-muted small">Prijs per aandeel:</span>
-                        <h4 class="fw-bold text-info mb-0">€ @currentProject.PricePerShare</h4>
+                        <h4 class="fw-bold text-info mb-0">@currentProject.PricePerShare.ToString("C0")</h4>
                     </div>
                     <div class="col-6 border-start ps-3">
                         <span class="text-muted small">Vaste kosten/jr (schatting):</span>
-                        <h4 class="fw-bold text-dark mb-0">€ 250 <span class="fs-6 fw-normal text-muted">/aandeel</span></h4>
+                        <h4 class="fw-bold text-dark mb-0">@(250.ToString("C0"))<span class="fs-6 fw-normal text-muted">/aandeel</span></h4>
                     </div>
                 </div>
 

@@ -4,6 +4,7 @@
 <div class="cms-body">
     @if (contentItemProperties!=null)
     {
+        <h3>@contentItemProperties.Title</h3>
         @((MarkupString)contentItemProperties.Content.Markup)
     }
 </div>

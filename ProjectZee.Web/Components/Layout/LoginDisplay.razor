@@ -1,7 +1,7 @@
 ﻿<div class="navbar-nav  ms-auto">
     <AuthorizeView>
     <Authorized>
-        <a href="/" class="nav-link">Hallo, @context.User.Identity?.Name!</a>
+        <a href="/userspage" class="nav-link">Hallo, @context.User.Identity?.Name!</a>
         <form action="/Account/logout" method="post">
             <AntiforgeryToken />
             <input hidden name="ReturnUrl" value="">
