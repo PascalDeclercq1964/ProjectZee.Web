@@ -1,0 +1,52 @@
+﻿@page "/x"
+
+
+<div class="container">
+    <h3>JaarKalenderPage</h3>
+    <div class="col-8">
+
+        <table class="table table-bordered">
+            @for (int i = 0; i < 3; i++)
+            {
+                <tr style="height: 60px;">
+                    <td colspan="7" class="border-1">@(new DateTime(2000, i * 4 + 1, 1).ToString("MMMM"))</td>
+                    <td></td>
+                    <td colspan="7" class="border-1">@(new DateTime(2000, i * 4 + 2, 1).ToString("MMMM"))</td>
+                    <td></td>
+                    <td colspan="7" class="border-1">@(new DateTime(2000, i * 4 + 3, 1).ToString("MMMM"))</td>
+                    <td></td>
+                    <td colspan="7" class="border-1">@(new DateTime(2000, i * 4 + 4, 1).ToString("MMMM"))</td>
+                    <td></td>
+                </tr>
+                @for (int l = 0; l < 5; l++)
+                {
+                    <tr>
+                        @for (int j = 0; j < 4; j++)
+                        {
+                            @for (int k = 0; k < 7; k++)
+                            {
+                                DateTime dateTime = new DateTime(2025, 12, 29).AddDays(k+l*7);
+                                @if (l == 0)
+                                {
+                                    <td class="border-1 text-center" style="width: 3%;">@(((DayOfWeek)k).ToString().Substring(0, 1))</td>
+
+                                }
+                                else
+                                {
+                                    <td class="border-1">@dateTime.Day</td>
+                                }
+                            }
+                            <td class="border-top-0 border-bottom-0"></td>
+                        }
+                    </tr>
+                }
+            }
+        </table>
+    </div>
+</div>
+
+
+
+@code {
+
+}
