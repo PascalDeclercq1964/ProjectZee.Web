@@ -1,11 +1,35 @@
 @page "/info/{id}"
+@using ProjectZee.Web.Services
+@inject CmsService Cms
+
 <div class="container my-5">
 <div class="row g-4">
     <h1 class="mb-4 fw-bold text-dark"><i class="bi bi-building-gear text-info me-2"></i>Alles wat je moet weten...</h1>
     <div class="col-lg-9">
         <div class="card border-0 shadow-sm sticky-lg-top" style="top: 90px;">
             <div class="card-body">
-                <CmsSnippet Slug="@Id"/>
+                @if(Id=="faq")
+                {
+                    if (faqItems!=null)
+                    {
+
+                    <h3 class="fw-bold mb-4"><i class="bi bi-question-circle-fill text-info me-2"></i>Veelgestelde vragen</h3>
+                    <Accordion>
+                        @foreach(var faq in faqItems)
+                        {
+                            <AccordionItem Title="@faq.Title">
+                                <Content>
+                                    @((MarkupString)faq.Content.Markup)
+                                </Content>
+                            </AccordionItem>
+                        }
+                    </Accordion>
+                    }
+                }
+                else
+                {
+                    <CmsSnippet Slug="@Id"/>
+                }
             </div>
         </div>
     </div>
@@ -17,7 +41,7 @@
             <li><a href="/info/aankoop">Aankoop van het pand</a></li>
             <li><a href="/info/gebruik">Het gebruik van het pand</a></li>
             <li><a href="/info/heteinde">Einde van het project</a></li>
-            <li><a href="/faq">Veelgestelde vragen (faq)</a></li>
+            <li><a href="/info/faq">Veelgestelde vragen (faq)</a></li>
         </ul>
         <h5>Terminologie</h5>
         Voor een beter begrip van de informatie op deze website, is het handig om enkele termen te kennen die hier vaak worden gebruikt
@@ -32,7 +56,29 @@
 </div>
 </div>
 @code{
+
+        string[] slugs=    {
+        "FaqVolger",
+        "FaqProject",
+        "FaqKandidaat"
+    };
+
+    private List<CmsContentItem> faqItems; 
+
     [Parameter]
     public string Id { get; set; }
+    protected override void OnInitialized()
+    {
+        if (Id=="faq")
+        {
+        faqItems = new List<CmsContentItem>();
+        foreach (var slug in slugs)
+        {
+            var content = Cms.GetPageAsync(slug).Result;
+            faqItems.Add(content);
+        }
+        StateHasChanged();
+        }
+    } 
 
 }
