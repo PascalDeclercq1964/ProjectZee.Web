@@ -2,8 +2,9 @@
     <AuthorizeView>
     <Authorized>
         <a href="/" class="nav-link">Hallo, @context.User.Identity?.Name!</a>
-        <form action="/Account/logout?returnUrl=/" method="post">
+        <form action="/Account/logout" method="post">
             <AntiforgeryToken />
+            <input hidden name="ReturnUrl" value="">
             <button type="submit" class="nav-link btn btn-link">Uitloggen</button>
         </form>
     </Authorized>
