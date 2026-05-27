@@ -3,6 +3,7 @@
 @using System.Security.Claims
 @using Microsoft.EntityFrameworkCore
 @using ProjectZee.Web.Data
+@using BlazorBootstrap.Components
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject ApplicationDbContext Context
 @attribute [Authorize]
@@ -11,7 +12,7 @@
     <h4>Project waarvoor je kandidaat bent:</h4>
 
     <h4>Project die je volgt</h4>
-    <Grid TItem="ProjectFollower" Data="applicationUser.FollowedProjects" Class="table table-sm table-striped">
+    <Grid @ref="grid" TItem="ProjectFollower" Data="projectFollowers" Class="table table-sm table-striped">
         <GridColumns>
             <GridColumn TItem="ProjectFollower" HeaderText="Project">
                 @context.Project.Name
@@ -26,7 +27,7 @@
                 @context.Project.TargetBudget
             </GridColumn>
             <GridColumn TItem="ProjectFollower">
-                Niet meer volgen
+                <Button Color="ButtonColor.Primary" @onclick='() => unFollow(context)'>Niet meer volgen</Button>
             </GridColumn>
         </GridColumns>
     </Grid>
@@ -34,10 +35,10 @@
 </div>
 
 @code {
-
+    Grid<ProjectFollower> grid = default!;
     ClaimsPrincipal user;
     ApplicationUser applicationUser;
-
+    List<ProjectFollower> projectFollowers = new();
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -50,6 +51,16 @@
             applicationUser = Context.Users
                 .Include(x=>x.FollowedProjects).ThenInclude(x=>x.Project)
                 .FirstOrDefault(u => u.UserName == userName);
+            projectFollowers = applicationUser.FollowedProjects;
         }
+    }
+
+    async Task unFollow(ProjectFollower projectFollower)
+    {
+        projectFollowers.Remove(projectFollower);
+        Context.ProjectFollowers.Remove(projectFollower);
+        Context.SaveChanges();
+
+        await grid.RefreshDataAsync();
     }
 }

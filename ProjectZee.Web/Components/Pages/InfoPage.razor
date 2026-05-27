@@ -3,82 +3,93 @@
 @inject CmsService Cms
 
 <div class="container my-5">
-<div class="row g-4">
-    <h1 class="mb-4 fw-bold text-dark"><i class="bi bi-building-gear text-info me-2"></i>Alles wat je moet weten...</h1>
-    <div class="col-lg-9">
-        <div class="card border-0 shadow-sm sticky-lg-top" style="top: 90px;">
-            <div class="card-body">
-                @if(Id=="faq")
-                {
-                    if (faqItems!=null)
+    <div class="row g-4">
+        <h1 class="mb-4 fw-bold text-dark"><i class="bi bi-building-gear text-info me-2"></i>Alles wat je moet weten...</h1>
+        <div class="col-lg-9">
+            <div class="card border-0 shadow-sm sticky-lg-top" style="top: 90px;">
+                <div class="card-body">
+                    @if (Id == "faq")
                     {
-
-                    <h3 class="fw-bold mb-4"><i class="bi bi-question-circle-fill text-info me-2"></i>Veelgestelde vragen</h3>
-                    <Accordion>
-                        @foreach(var faq in faqItems)
+                        if (faqItems != null)
                         {
-                            <AccordionItem Title="@faq.Title">
-                                <Content>
-                                    @((MarkupString)faq.Content.Markup)
-                                </Content>
-                            </AccordionItem>
+                            <h3 class="fw-bold mb-4"><i class="bi bi-question-circle-fill text-info me-2"></i>Veelgestelde vragen</h3>
+                            <Accordion>
+                                @foreach (var faq in faqItems)
+                                {
+                                    <AccordionItem Title="@faq.Title">
+                                        <Content>
+                                            @((MarkupString)faq.Content.Markup)
+                                        </Content>
+                                    </AccordionItem>
+                                }
+                            </Accordion>
                         }
-                    </Accordion>
                     }
-                }
-                else
-                {
-                    <CmsSnippet Slug="@Id"/>
-                }
+                    else
+                    {
+                        <CmsSnippet Slug="@Id" />
+                    }
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-lg-3">
-        <h5>Inhoudstafel</h5>
-        <ul>
-            <li><a href="/info/info">Wat is 'Project Zee'</a></li>
-            <li><a href="/info/stap1">Samenstelling kopersgroep</a></li>
-            <li><a href="/info/aankoop">Aankoop van het pand</a></li>
-            <li><a href="/info/gebruik">Het gebruik van het pand</a></li>
-            <li><a href="/info/heteinde">Einde van het project</a></li>
-            <li><a href="/info/faq">Veelgestelde vragen (faq)</a></li>
-        </ul>
-        <h5>Terminologie</h5>
-        Voor een beter begrip van de informatie op deze website, is het handig om enkele termen te kennen die hier vaak worden gebruikt
-        <ul>
-            <li>Coöperatie</li>
-            <li>Eigenaar</li>
-            <li>Kandidaat</li>
-            <li>Pand</li>
-            <li>Aandeel</li>
-        </ul>
+        <div class="col-lg-3">
+            <h5>Inhoudstafel</h5>
+            <ul>
+                <li><a href="/info/info">Wat is 'Project Zee'</a></li>
+                <li><a href="/info/stap1">Samenstelling kopersgroep</a></li>
+                <li><a href="/info/aankoop">Aankoop van het pand</a></li>
+                <li><a href="/info/gebruik">Het gebruik van het pand</a></li>
+                <li><a href="/info/heteinde">Einde van het project</a></li>
+                <li><a href="/info/faq">Veelgestelde vragen (faq)</a></li>
+            </ul>
+            <h5>Terminologie</h5>
+            Voor een beter begrip van de informatie op deze website, is het handig om enkele termen te kennen die hier vaak worden gebruikt
+            <ul>
+                <li>Coöperatie</li>
+                <li>Eigenaar</li>
+                <li>Kandidaat</li>
+                <li>Pand</li>
+                <li>Aandeel</li>
+            </ul>
+        </div>
     </div>
 </div>
-</div>
-@code{
+@code {
 
-        string[] slugs=    {
+    string[] slugs =    {
         "FaqVolger",
         "FaqProject",
         "FaqKandidaat"
     };
 
-    private List<CmsContentItem> faqItems; 
+    private List<CmsContentItem> faqItems;
 
     [Parameter]
     public string Id { get; set; }
-    protected override void OnInitialized()
+
+    protected override async Task OnParametersSetAsync()
     {
-        if (Id=="faq")
+        // Checken op "faq" (case-insensitive voor de veiligheid)
+        if (string.Equals(Id, "faq", StringComparison.OrdinalIgnoreCase))
         {
-        faqItems = new List<CmsContentItem>();
-        foreach (var slug in slugs)
-        {
-            var content = Cms.GetPageAsync(slug).Result;
-            faqItems.Add(content);
+            // Alleen ophalen als het nog niet ingeladen is (voorkomt onnodige API-calls bij re-renders)
+            if (faqItems == null)
+            {
+                var items = new List<CmsContentItem>();
+
+                foreach (var slug in slugs)
+                {
+                    // Netjes 'awaiten' in plaats van .Result gebruiken
+                    var content = await Cms.GetPageAsync(slug);
+                    if (content != null)
+                    {
+                        items.Add(content);
+                    }
+                }
+
+                faqItems = items;
+            }
         }
-        StateHasChanged();
-        }
-    } 
+    }
 
 }

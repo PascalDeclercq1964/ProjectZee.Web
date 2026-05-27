@@ -5,6 +5,7 @@
 @inject ApplicationDbContext Context
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@using BlazorBootstrap.Components
 @rendermode InteractiveServer
 <div class="container my-5">
     @if(selectedProject !=null)
@@ -14,7 +15,15 @@
     <CmsSnippet Slug="ExplainFollower"/>
     <AuthorizeView>
         <Authorized>
-            <button class="btn btn-primary" @onclick="HandleFollow">Volg dit project</button>
+            @if(alreadyFollowing)
+            {
+                <div>Je volgt dit project al.</div>
+                <div><Button Color="ButtonColor.Primary" @onclick='() => Navigation.NavigateTo("/userspage")'>Naar het overzicht van de projecten die je volgt</Button></div>
+            }
+            else
+            {
+                <button class="btn btn-primary" @onclick="HandleFollow">Volg dit project</button>
+            }
         </Authorized>
         <NotAuthorized>
             <CmsSnippet Slug="LoginToFollow"/>
@@ -24,6 +33,8 @@
 </div>
 @code {
     private bool isLoggedIn;
+    string userId;
+    bool alreadyFollowing;
     Project selectedProject { get; set; } = new Project();
 
     [Parameter]
@@ -31,7 +42,11 @@
 
     protected override async Task OnInitializedAsync()
     {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
         selectedProject = await Context.Projects.FirstOrDefaultAsync(p => p.ProjectId.ToString() == id);
+        alreadyFollowing = Context.ProjectFollowers.Any(x => x.ProjectId == selectedProject.ProjectId && x.UserId == userId);
     }
     void toLogin()
     {
@@ -39,16 +54,13 @@
     }
     async Task HandleFollow()
     {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-
         ProjectFollower projectFollower=new ProjectFollower
         {
-            UserId = user.FindFirstValue(ClaimTypes.NameIdentifier),
+            UserId =userId,
             ProjectId = selectedProject.ProjectId
         };
         Context.ProjectFollowers.Add(projectFollower);
         Context.SaveChanges();
-        Navigation.NavigateTo("/followerspage");
+        Navigation.NavigateTo("/userspage");
     }
 }
