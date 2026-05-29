@@ -2,11 +2,12 @@
 @using Microsoft.EntityFrameworkCore
 @using ProjectZee.Web.Data
 @inject ApplicationDbContext Context
+@inject NavigationManager NavigationManager
 <div class="container my-5">
     <div class="d-flex justify-content-between">
 
     <h1 class="mb-4 fw-bold text-dark"><i class="bi bi-building-gear text-info me-2"></i>Lopende Kustprojecten</h1>
-    <button class="btn btn-outline-info fw-bold mb-4">Stel nieuw project voor</button>
+    <button class="btn btn-outline-info fw-bold mb-4" @onclick='()=>NavigationManager.NavigateTo("/projectvoorstel")'>Stel nieuw project voor</button>
     </div>
 
     <div class="row g-4">
@@ -67,7 +68,7 @@
                 {
                 <div class="col-md-6">
                     <div class="card h-100 border-0 shadow-sm overflow-hidden">
-                        <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Project @project.Name">
+                            <img src="@project.ImageUrl" class="card-img-top" alt="Project @project.Name">
                         <div class="card-body">
                             <span class="badge bg-warning text-dark mb-2">@project.StatusDisplay</span>
                             <h4 class="card-title fw-bold text-dark">Project @project.Name</h4>
@@ -103,12 +104,10 @@
 
     override protected void OnInitialized()
     {
-        // Hier zou je normaal gesproken de projecten uit de database laden
-        // Bijvoorbeeld: var projecten = Context.Projecten.ToList();
-
         projects=Context.Projects
             .Include(p => p.ProjectFollowers)
             .Include(p => p.ProjectShareholders)
+            .Where(p=>p.ProjectState ==ProjectStates.Active)
             .ToList();
         doFilter();
     }

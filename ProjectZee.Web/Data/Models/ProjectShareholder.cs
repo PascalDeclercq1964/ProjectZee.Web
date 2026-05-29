@@ -10,6 +10,8 @@ public class ProjectShareholder
     public int ShareCount { get; set; }
 
     public int ShareholderProjectStatusId { get; set; }
+
+    public ProjectShareholdeStates ShareholderProjectStatus { get; set; }
 }
 
 public enum ShareholderProjectStatuses

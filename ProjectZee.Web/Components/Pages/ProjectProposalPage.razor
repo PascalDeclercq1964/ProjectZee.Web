@@ -1,0 +1,94 @@
+﻿@page "/projectvoorstel"
+@using Microsoft.AspNetCore.Authorization
+@using ProjectZee.Web.Data
+@attribute [Authorize]
+@inject ApplicationDbContext Context
+@inject NavigationManager NavigationManager
+
+<div class="container">
+    <h3>Project voorstel</h3>
+    <CmsSnippet Slug="ProjectProposalIntro" />
+    <div class="row g-4">
+        <!-- Linker Kolom: Core Parameters & Vastgoed Criteria -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm p-4 mb-4 bg-white">
+                <h5 class="fw-bold text-dark mb-3 border-bottom pb-2">1. Algemeen & Locatie</h5>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Naam van het project (bijv. een zeeterm)</label>
+                    <InputText @bind-Value="project.Name" class="form-control form-control-lg" placeholder="" />
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Regio of Gemeente</label>
+                        <InputText @bind-Value="project.RegionOrCity" class="form-control" placeholder="" />
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Doel Aankoopbudget (€)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">€</span>
+                        <InputNumber @bind-Value="project.TargetBudget" class="form-control form-control-lg fw-bold text-dark" />
+                    </div>
+                    <span class="text-muted xsmall">Dit omvat de geschatte aankoopprijs + notariskosten.</span>
+                </div>
+            </div>
+            <div class="card border-0 shadow-sm p-4 mb-4 bg-white">
+                <h5 class="fw-bold text-dark mb-3 border-bottom pb-2">2. Vastgoed Specificaties (Minima / Criteria)</h5>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Aantal slaapkamers</label>
+                        <InputNumber @bind-Value="project.Bedrooms" class="form-control" min="1" max="5" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Minimale Oppervlakte (m²)</label>
+                        <InputNumber @bind-Value="project.MinApartmentSize" class="form-control" min="30" />
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Maximale Afstand tot strand (meters)</label>
+                        <div class="input-group">
+                            <InputNumber @bind-Value="project.MaxDistanceToBeach" class="form-control" min="0" step="50" />
+                            <span class="input-group-text">meter</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold">Zeezicht</label>
+                        <InputSelect @bind-Value="project.SeaView" class="form-select">
+                            @foreach (var val in Enum.GetValues<RequirementTypes>())
+                            {
+                                <option value="@val">@val.ToString()</option>
+                            }
+                        </InputSelect>
+                    </div>
+                </div>
+            </div>
+            <div class="card border-0 shadow-sm p-4 mb-4 bg-white">
+                <h5 class="fw-bold text-dark mb-3 border-bottom pb-2">3. Overige</h5>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold">Overige criteria & andere zaken die u belangrijk vindt</label>
+                    <TextAreaInput @bind-Value="project.OtherInfo" Rows"5" class="form-control form-control-lg" placeholder="" />
+                </div>
+            </div>
+            <Button Color="ButtonColor.Primary" @onclick='Save'>Voorstel Indienen</Button>
+        </div>
+    </div>
+</div>
+@code {
+    Project project = new Project();
+
+    void Save()
+    {
+        //var result = project.Validate();
+
+        project.ProjectState = ProjectStates.Proposal;
+        Context.Projects.Add(project);
+        Context.SaveChanges();
+        NavigationManager.NavigateTo("/content/ProjectProposalThankYou");
+    }
+}

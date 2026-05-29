@@ -2,6 +2,7 @@
 {
     using System.Net.Http.Json;
 
+    //https://docs.umbraco.com/umbraco-cms/develop-with-umbraco/headless-and-apis/content-delivery-api
     public class CmsService
     {
         private readonly IHttpClientFactory _httpClientFactory;
@@ -31,6 +32,9 @@
             catch { } // we suffer in silence ..
             return returnItem;
         }
+
+        //om items op te halen, bv voor de homepage, kunnen we ook de children van een item ophalen, en daaruit de juiste content vissen
+        //https://documentatie.cameleonsoftware.be/umbraco/delivery/api/v1/content?fetch=children:3057a2fe-5707-4a90-88fe-cbfbe68fadcc
 
         private string? ExtractImageUrl(object? propertyValue)
         {

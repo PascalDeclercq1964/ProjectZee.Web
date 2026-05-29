@@ -18,6 +18,10 @@ public class Project
         public List<ProjectFollower> ProjectFollowers { get; set; }
         public List<ProjectShareholder> ProjectShareholders { get; set; }
         public List<CustomAttributeValue> ExtraAttributes { get; set; } = new();
+        public ProjectStates ProjectState { get; set; }
+        public string ImageUrl { get; set; }
+
+    public string OtherInfo { get; set; }
 
         [NotMapped]
         public double PricePerShare { get {return Math.Round(TargetBudget/16,0);} }
