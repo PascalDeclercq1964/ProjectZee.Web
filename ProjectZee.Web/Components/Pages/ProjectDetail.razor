@@ -3,7 +3,7 @@
 @using ProjectZee.Web.Data
 @inject ApplicationDbContext Context
 @inject NavigationManager Navigation
-
+@inject AuthenticationStateProvider AuthenticationStateProvider
 <div class="container my-5">
     <!-- Back button -->
     <a href="/projecten" class="btn btn-link text-muted p-0 mb-3 text-decoration-none"><i class="bi bi-arrow-left me-2"></i>Terug naar overzicht</a>
@@ -14,7 +14,19 @@
             <h1 class="fw-bold mb-2">Project @currentProject.Name</h1>
             <p class="text-muted fs-5"><i class="bi bi-geo-alt-fill text-danger"></i>@currentProject.RegionOrCity</p>
 
-            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200&q=80" class="img-fluid rounded shadow-sm mb-4" alt="Project @currentProject.RegionOrCity">
+            <div class="project-card-container">
+                <img src="@currentProject.ImageUrl"
+                     class="img-fluid rounded shadow-sm mb-4"
+                     alt="Project @currentProject.RegionOrCity"
+                     style="width:100%; height:40%; object-fit:cover; object-position:center;">
+
+                @if (currentUserIsFollower)
+                {
+                    <div class="follower-badge">
+                        <i class="fas fa-star"></i> Volger
+                    </div>
+                }
+            </div>
 
             <h3 class="fw-bold mb-3 mt-4">Projectkenmerken</h3>
             <div class="card border-0 shadow-sm">
@@ -69,7 +81,7 @@
                     </div>
                     <div class="col-6 border-start ps-3">
                         <span class="text-muted small">Vaste kosten/jr (schatting):</span>
-                        <h4 class="fw-bold text-dark mb-0">@(250.ToString("C0"))<span class="fs-6 fw-normal text-muted">/aandeel</span></h4>
+                        <h4 class="fw-bold text-dark mb-0">@(15.ToString("C0"))<span class="fs-6 fw-normal text-muted">/aandeel</span></h4>
                     </div>
                 </div>
 
@@ -85,8 +97,15 @@
                     <p class="text-muted small mt-2 mb-0">We zoeken nog mede-investeerders om de aankoop te finaliseren</p>
                 </div>
 
-                <button class="btn btn-success btn-lg w-100 fw-bold shadow-sm mb-2"><i class="bi bi-chat-left-text me-2"></i>Stel je kandidaat</button>
-                <button class="btn btn-outline-secondary w-100 fw-bold" @onclick="follow"><i class="bi bi-bell me-2"></i>Volg dit project</button>
+                <button class="btn btn-success btn-lg w-100 fw-bold shadow-sm mb-2"><i class="bi bi-chat-left-text me-2" @onclick='()=>Navigation.NavigateTo($"/kandidaat/{id}")'></i>Stel je kandidaat</button>
+                @if(currentUserIsFollower)
+                {
+                    <button class="btn btn-outline-secondary w-100 fw-bold" @onclick="unFollow"><i class="bi bi-bell me-2"></i>Je volgt dit project. Niet meer volgen</button>
+                }
+                else
+                {
+                    <button class="btn btn-outline-secondary w-100 fw-bold" @onclick="follow"><i class="bi bi-bell me-2"></i>Volg dit project</button>
+                }
             </div>
         </div>
     </div>
@@ -97,16 +116,45 @@
     [Parameter]
     public string id { get; set; }
 
-    Project currentProject { get; set; }
+    bool currentUserIsFollower = false;
+    bool currentUserIsShareholder = false;
 
-    override protected void OnParametersSet()
+    Project currentProject { get; set; }
+    ApplicationUser applicationUser;
+
+
+
+    protected override async Task OnParametersSetAsync()
     {
         currentProject = Context.Projects
             .Include(p => p.ProjectFollowers)
             .Include(p => p.ProjectShareholders)
             .FirstOrDefault(p => p.ProjectId.ToString() == id);
+
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            var userName = user.Identity.Name;
+            // Hier kun je verdere logica toevoegen om de projecten op te halen die de gebruiker volgt of waarvoor hij kandidaat is.
+
+            applicationUser = Context.Users
+                .FirstOrDefault(u => u.UserName == userName);
+
+            currentUserIsFollower= currentProject.ProjectFollowers.Any(x => x.UserId == applicationUser.Id);
+            //currentUserIsShareholder = currentProject.ProjectShareholders.Any(x => x.ShareholderId == applicationUser.Id);
+
+        }
     } 
 
+    void unFollow()
+    {
+        var projectFollower = currentProject.ProjectFollowers.First(x => x.UserId == applicationUser.Id);
+        currentProject.ProjectFollowers.Remove(projectFollower);
+        Context.ProjectFollowers.Remove(projectFollower);
+        Context.SaveChanges();
+        currentUserIsFollower = false;
+    }
     void follow()
     {
         Navigation.NavigateTo($"/start-following/{id}");

@@ -28,12 +28,13 @@ namespace ProjectZee.Web.Data
         public string PreferredRegion { get; set; } = string.Empty;
         public int PreferredBedrooms { get; set; } = 2;
         public int MaxDistanceToBeach { get; set; } = 100;
-        public SeaViewPreferenceType SeaViewPreference { get; set; } = SeaViewPreferenceType.NiceToHave;
+        public RequirementTypes SeaViewPreference { get; set; }
 
         // Persoonlijk
         public string Bio { get; set; } = string.Empty;
 
         public List<ProjectFollower> FollowedProjects { get; set; }
+        public List<ProjectShareholder> ShareholderInProjects { get; set; }
 
         public string FullName => $"{FirstName} {LastName}";
     }

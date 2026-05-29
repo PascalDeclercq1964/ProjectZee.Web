@@ -49,3 +49,27 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+.project-card-container {
+    position: relative;
+    width: 100%;
+    height: auto; /* Laat de hoogte bepaald worden door de foto */
+}
+
+/* Het vlaggetje/label */
+.follower-badge {
+    position: absolute;
+    top: 15px; /* Afstand vanaf de bovenkant van de foto */
+    right: 15px; /* Afstand vanaf de rechterkant van de foto */
+    background-color: #28a745; /* Succes-groen (of kies je eigen merkkleur) */
+    color: white;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    border-radius: 20px; /* Maakt er een mooie pil-vorm van */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25); /* Geeft het vlaggetje diepte */
+    z-index: 10; /* Zorgt dat het vlaggetje gegarandeerd bovenop de foto ligt */
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Ruimte tussen icoontje en tekst */
+}
