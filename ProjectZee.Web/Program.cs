@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using ProjectZee.Web;
 using ProjectZee.Web.Components;
 using ProjectZee.Web.Components.Account;
 using ProjectZee.Web.Data;
@@ -41,6 +42,7 @@ builder.Services.AddHttpClient("UmbracoCms", client =>
 });
 builder.Services.AddScoped<CmsService>();
 builder.Services.AddBlazorBootstrap();
+builder.Services.AddScoped<UserState>();
 
 var app = builder.Build();
 

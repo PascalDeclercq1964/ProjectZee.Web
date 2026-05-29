@@ -3,13 +3,15 @@
 @using ProjectZee.Web.Data
 @inject ApplicationDbContext Context
 @inject NavigationManager NavigationManager
+@inject UserState UserState
+
 <div class="container my-5">
     <div class="d-flex justify-content-between">
 
     <h1 class="mb-4 fw-bold text-dark"><i class="bi bi-building-gear text-info me-2"></i>Lopende Kustprojecten</h1>
     <button class="btn btn-outline-info fw-bold mb-4" @onclick='()=>NavigationManager.NavigateTo("/projectvoorstel")'>Stel nieuw project voor</button>
     </div>
-
+    ---@UserState.Email+++@UserState.Username---
     <div class="row g-4">
         <!-- Linker Kolom: Filters -->
         <div class="col-lg-3">

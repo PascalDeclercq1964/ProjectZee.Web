@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
+using ProjectZee.Web;
 using ProjectZee.Web.Components.Account.Pages;
 using ProjectZee.Web.Components.Account.Pages.Manage;
 using ProjectZee.Web.Data;
@@ -43,9 +44,10 @@ namespace Microsoft.AspNetCore.Routing
             accountGroup.MapPost("/Logout", async (
                 ClaimsPrincipal user,
                 SignInManager<ApplicationUser> signInManager,
-                [FromForm] string returnUrl) =>
+                [FromForm] string returnUrl, UserState userState) =>
             {
                 await signInManager.SignOutAsync();
+                userState.Clear();
                 return TypedResults.LocalRedirect($"~/{returnUrl}");
             });
 
